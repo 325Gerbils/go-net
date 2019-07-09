@@ -59,7 +59,10 @@ func (c *Client) Connect(ip string) (err error) {
 func (c Client) OnMessage(on func(msg string)) {
 	go func() {
 		for {
-			message, _ := bufio.NewReader(c.conn).ReadString('\n')
+			message, err := bufio.NewReader(c.conn).ReadString('\n')
+			if err != nil {
+				break
+			}
 			go on(message)
 		}
 	}()
