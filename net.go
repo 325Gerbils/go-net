@@ -25,14 +25,13 @@ func (s *Server) Start(port string) (err error) {
 }
 
 // OnMessage ...
-func (s Server) OnMessage(on func(msg string)) (err error) {
-	for {
-		message, err := bufio.NewReader(s.conn).ReadString('\n')
-		if err != nil {
-			return err
+func (s Server) OnMessage(on func(msg string)) {
+	go func() {
+		for {
+			message, _ := bufio.NewReader(s.conn).ReadString('\n')
+			go on(message)
 		}
-		go on(message)
-	}
+	}()
 }
 
 // Send ...
@@ -57,14 +56,13 @@ func (c *Client) Connect(ip string) (err error) {
 }
 
 // OnMessage ...
-func (c Client) OnMessage(on func(msg string)) (err error) {
-	for {
-		message, err := bufio.NewReader(c.conn).ReadString('\n')
-		if err != nil {
-			return err
+func (c Client) OnMessage(on func(msg string)) {
+	go func() {
+		for {
+			message, _ := bufio.NewReader(c.conn).ReadString('\n')
+			go on(message)
 		}
-		go on(message)
-	}
+	}()
 }
 
 // Send ...
